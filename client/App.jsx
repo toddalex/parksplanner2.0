@@ -1,8 +1,13 @@
 import React from 'react';
-import Connected from './containers/mapContainer.jsx';
-import MapContainer from './containers/mapContainer.jsx';
+import Connected from './containers/MapContainer.jsx';
+import MapContainer from './containers/MapContainer.jsx';
+import Nav from './components/nav.jsx'
 import Park from './components/park.jsx';
 import Login from './components/login.jsx';
+import ParkDisplay from './components/ParkDisplay.jsx';
+import Landing from './components/Landing.jsx';
+import Loading from './components/Loading.jsx'
+import * as actions from './actions/actions';
 import { connect } from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -13,61 +18,74 @@ import {
 
 // (Optional) import stylesheet here.
 import './stylesheets/styles.scss';
+import HomeContainer from './containers/HomeContainer.jsx';
 
 const mapStateToProps = state => ({
   loggedInUser: state.park.loggedInUser,
   showPark: state.park.showPark,
+  location: state.park.location,
 });
+
+const mapDispatchToProps = dispatch => ({
+  setLocation: (e) => {
+    const input = document.querySelector('#zip-input')
+    console.log(input.value)
+    e.preventDefault();
+    const location = input.value;
+    dispatch(actions.setLocation(location))
+  },
+  
+});
+
+
+
 
 class App extends React.Component {
   constructor(props) {
     super(props)
   }
-
+  
   render() {
     // CHECKING IF USER IS LOGGED IN/ SIGNED UP --------------------------------
-
-    // User is logged in/ signed up
-    if (this.props.loggedInUser.length > 0) {
+    if (this.props.location === '') {
       return (
-        <Router>
-          <div id='main'>
-            <h1>🌲  Parks Planner  🌲</h1>
-            <h2>Hello, {this.props.loggedInUser} ! </h2>
-              <Switch>
-                <Route path="/">
-                  <MapContainer />
-                  <div id="innerBox">
-                    {this.props.showPark ?
-                      <Park />
-                      : <div id="innerBox"><b>Select a park to view info!</b></div>}
-                  </div>
-                </Route>
-              </Switch>
-          </div>
-        </Router >
-      )
-    }
+      <Router>
+        <Switch>
+          <Route path="/" exact>
+            <Landing setLocation={this.props.setLocation}/>
+          </Route>
+          <Route path="/signup" exact component={Login} />
+        </Switch>
+      </Router>
+  
+      
+      )}
+    // User is logged in/ signed up
+    // if (this.props.loggedInUser.length > 0) {
+    //   return (
+    //     <Router>
+    //       <div id='main'>
+    //         <Nav />
+    //           <Switch>
+    //             <Route path="/" exact component={HomeContainer} />
+    //             <Route path="/park" exact component={ParkDisplay} />
+    //             <Route path="/signup" exact component={Login} />
+    //           </Switch>
+    //       </div>
+    //     </Router >
+    //   )
+    // }
     
     // user is NOT Logged In/ Signed Up
     else return (
       <Router>
         <div id='main'>
-          <h1>🌲  Parks Planner  🌲</h1>
-          <Link to="/signup">Sign Up / Log-in</Link>
-            <Switch>
-              <Route path="/signup">
-                <Login />
-              </Route>
-              <Route path="/">
-                <MapContainer />
-                <div id="innerBox">
-                  {this.props.showPark ?
-                    <Park />
-                    : <div id="innerBox"><b>Select a park to view info!</b></div>}
-                </div>
-              </Route>
-            </Switch>
+          <Nav />
+          <Switch>
+            <Route path="/" exact component ={HomeContainer} />
+            <Route path="/park" exact component={ParkDisplay} />
+            <Route path="/signup" exact component={Login} />
+          </Switch>
         </div>
       </Router >
     )
@@ -77,4 +95,4 @@ class App extends React.Component {
 
 
 
-export default connect(mapStateToProps, null)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

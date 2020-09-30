@@ -1,35 +1,33 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-// mapStateToProps
-const mapStateToProps = state => ({
-  fullName: state.park.fullName,
-  description: state.park.description,
-  weather: state.park.weather,
-  images: state.park.images,
-  showPark: state.park.showPark,
-
-})
-
-
-// pull out the pieces of state that we want to render for specific park data
+import { Link, Redirect } from 'react-router-dom';
+import { Card, CardActionArea, CardActions, CardContent, CardMedia, Button, Typography } from '@material-ui/core'
 
 
 class Park extends Component {
+  constructor() {
+    super()
+  }
+
+
   render() {
     return (
-      <div id='Park'>
-        <ul>
-          <h2>{this.props.fullName}</h2>
-          <li id='description'>{this.props.description}</li>
-          <li id='weather'>{this.props.weather}</li>
-          <img id='image' src={this.props.images}></img>
-        </ul>
+      <Link to={{
+        pathname: '/park',
+        stateLookup: this.props.stateLookup
+      }}>
+        <Card className="parkCard" raised>
+          <CardActionArea>
+            <CardMedia className="parkCardImage" image={this.props.images[0].url} title="park" component="img">
 
-      </div >
+            </CardMedia>
+              <CardContent className="cardContent">
+                <Typography gutterBottom variant="h5" component="h4">{this.props.fullName}</Typography>
+                <Typography variant="body2" color="textSecondary" component="p">{this.props.description}</Typography>
+              </CardContent>
+          </CardActionArea>
+        </Card >
+      </Link>
     )
   }
 }
-
-
-export default connect(mapStateToProps, null)(Park);
+export default Park;

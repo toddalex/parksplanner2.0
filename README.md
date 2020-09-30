@@ -1,4 +1,6 @@
-# Parks-Planner
+# AirPnP
+
+![preview](https://i.imgur.com/lLaZ4Ux.jpg)
 
 /******  APIs *******/
 * Used Google Maps API and goole-maps-react to render the Maps component. 
